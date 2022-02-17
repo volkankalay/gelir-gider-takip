@@ -12,13 +12,9 @@ export interface IExpensePageProps { };
 
 const ExpensePage: React.FunctionComponent<IExpensePageProps> = props => {
 
-    const [input, setInput] = useState("");
-    const [categories, setCategories] = useState([]);
-
     const [userToken, setUserToken] = React.useState(
         sessionStorage.getItem('userToken') || ''
     );
-
 
     let location = useLocation();
     const navigation = useNavigate();
@@ -34,8 +30,8 @@ const ExpensePage: React.FunctionComponent<IExpensePageProps> = props => {
             <HeaderComponent title='Gelir Gider' />
             <MenuComponent />
             <ExpenseFormComponent />
-            <div className='container'>
-                <ExpenseListComponent />
+            <div className='mx-3'>
+                <ExpenseListComponent  />
 
             </div>
             <FooterComponent/>

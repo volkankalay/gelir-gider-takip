@@ -1,5 +1,6 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import * as AuthService from '../../services/AuthService';
 
 export interface ICategoryFormComponentProps { };
 
@@ -14,9 +15,6 @@ const CategoryFormComponent: React.FunctionComponent = () => {
 
     const [name, setName] = useState('');
     const [type, setType] = useState('1');
-    const [userToken, setUserToken] = React.useState(
-        sessionStorage.getItem('userToken') || ''
-    );
     const addCategory = async (name: string, type: string) => {
         try {
 
@@ -28,7 +26,7 @@ const CategoryFormComponent: React.FunctionComponent = () => {
                 },
                     {
                         headers: {
-                            Authorization: `Bearer ` + JSON.parse(userToken)
+                            Authorization: `Bearer ` + AuthService.getCurrentToken()
                         }
                     });
 

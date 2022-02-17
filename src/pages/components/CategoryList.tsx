@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import * as AuthService from '../../services/AuthService';
 
 export interface ICategoryListComponentProps { categories: Array<string> };
@@ -12,15 +12,19 @@ const CategoryListComponent: React.FunctionComponent<ICategoryListComponentProps
 
     const [categories, setCategories] = React.useState([]);
 
+
     const [userToken, setUserToken] = React.useState(
         sessionStorage.getItem('userToken') || ''
     );
+
 
     React.useEffect(() => {
         setTimeout(() => {
             getCategories();
         }, 1000);
     });
+
+
     const getCategories = async () => {
         try {
             const data = await axios.get(API_URL,
@@ -52,7 +56,7 @@ const CategoryListComponent: React.FunctionComponent<ICategoryListComponentProps
                     }
                 })
                 .then((res) => {
-                    getCategories();
+                    //getCategories();
                 })
                 .catch((error) => {
                     console.error(error);
@@ -65,7 +69,7 @@ const CategoryListComponent: React.FunctionComponent<ICategoryListComponentProps
     }
 
     return (
-        <div className='container'>
+        <div>
 
             <table className='table table-hover mt-4'>
                 <thead className=' table-dark bg-dark'>

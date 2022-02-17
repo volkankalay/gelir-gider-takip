@@ -18,10 +18,10 @@ const UserMainPage: React.FunctionComponent<IUserMainPageProps> = props => {
     let location = useLocation();
     const navigation = useNavigate();
 
-    useEffect(() => {        
-            //const user = AuthService.getCurrentUser();
-            //setCurrentUser(user);
-    });
+    useEffect(() => {
+        const user = AuthService.getCurrentUser();
+        setCurrentUser(user);
+    }, []);
 
     if (!userToken) {
         alert('Giriş Yapınız.');
