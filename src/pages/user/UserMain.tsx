@@ -5,6 +5,7 @@ import HeaderComponent from '../components/Header';
 import MenuComponent from '../components/Menu';
 import * as AuthService from '../../services/AuthService';
 import { User } from '../../../types';
+import FooterComponent from '../components/Footer';
 
 export interface IUserMainPageProps { };
 
@@ -33,7 +34,11 @@ const UserMainPage: React.FunctionComponent<IUserMainPageProps> = props => {
     return <div>
         <HeaderComponent title='Kullanıcı Paneli' />
         <MenuComponent />
-        <div className='bg-light my-5'>{userToken}</div>
+        {/*<div className='bg-light my-5'>{userToken}</div>*/}
+        <div className='container p-5 text-center'>
+            <div className='h2 m-5'> Hoşgeldiniz</div>
+        </div>
+        <FooterComponent />
     </div >
         ;
 };

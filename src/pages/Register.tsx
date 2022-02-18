@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams, useLocation, Navigate, Outlet } from 'react-router-dom';
 import { UserType } from '../../types';
+import { API_URL } from '../services/AuthService';
 import HeaderComponent from './components/Header';
 
 export interface IRegisterPageProps {
@@ -29,7 +30,7 @@ const RegisterPage: React.FunctionComponent<IRegisterPageProps> = props => {
 
             if (email != '' && password != '') {
 
-                const { data } = await axios.post("http://192.168.1.100/api/v1/register", {
+                const { data } = await axios.post(API_URL + "register", {
                     email: email,
                     password: password
                 });
@@ -38,6 +39,7 @@ const RegisterPage: React.FunctionComponent<IRegisterPageProps> = props => {
                     setUser(data);
                     setUserToken(data.token);
                     sessionStorage.setItem('userToken', JSON.stringify(data.token));
+                    sessionStorage.setItem('user', JSON.stringify(data.user));
                     navigation('/kullanici');
                 }
 

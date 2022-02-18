@@ -22,7 +22,7 @@ const ExpensePage: React.FunctionComponent<IExpensePageProps> = props => {
     const [date, setDate] = useState('');
     const [amount, setAmount] = useState('0.00');
     const [currency, setCurrency] = useState('1');
-    const [category, setCategory] = useState('1');
+    const [category, setCategory] = useState('');
     const [description, setDescription] = useState('');
 
     const [USD_TCMB, setUSD] = useState(10.27);
@@ -44,8 +44,13 @@ const ExpensePage: React.FunctionComponent<IExpensePageProps> = props => {
 
     const addExpense = async (date: string, amount: string, currency: string, category: string, description: string) => {
         try {
-
-            if (date && currency != null && amount != null && (parseFloat(amount) > 0)) {
+            console.log('date', date,)
+            console.log('amount', amount,)
+            console.log('currency', currency,)
+            console.log('category', category,)
+            console.log('description', description,)
+            
+            if (date && currency != null && amount != null && (parseFloat(amount) > 0) && (category != '')) {
 
                 const { data } = await axios.post(AuthService.API_URL + "expense", {
                     transaction_date: date,
@@ -92,7 +97,11 @@ const ExpensePage: React.FunctionComponent<IExpensePageProps> = props => {
                     }
                 })
                 .then((res) => {
+                    console.log(res.data);
                     setCategories(res.data);
+                    if(res.data.length > 0){
+                        setCategory(res.data[0].id);
+                    }
                 })
                 .catch((error) => {
                     console.error(error);
