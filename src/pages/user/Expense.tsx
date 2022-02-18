@@ -7,6 +7,7 @@ import HeaderComponent from '../components/Header';
 import MenuComponent from '../components/Menu';
 import * as AuthService from '../../services/AuthService';
 import moment from 'moment';
+import * as xml2js from 'xml2js';
 
 export interface IExpensePageProps { };
 
@@ -24,14 +25,18 @@ const ExpensePage: React.FunctionComponent<IExpensePageProps> = props => {
     const [category, setCategory] = useState('1');
     const [description, setDescription] = useState('');
 
+    const [USD_TCMB, setUSD] = useState(10.27);
+    const [EURO_TCMB, setEURO] = useState(11.64);
+
 
     const [showUpdateBtn, setshowUpdateBtn] = useState(false);
     const [UpdateId, setUpdateId] = useState(0);
 
     const [StartDate, setStartDate] = useState('');
-    const [isStartDate, setIsStartDate] = useState(false);
     const [EndDate, setEndDate] = useState('');
-    const [isEndDate, setIsEndDate] = useState(false);
+
+    const [showTotal, setShowTotal] = useState(false);
+    const [totalAmount, setTotalAmount] = useState(0);
 
 
     const [currencies, setCurrencies] = useState([]);
@@ -117,16 +122,6 @@ const ExpensePage: React.FunctionComponent<IExpensePageProps> = props => {
         getCurrencies();
         getCategories();
     }, []);
-
-
-    React.useEffect(() => {
-        if (isEndDate && isStartDate) {
-            console.log(StartDate);
-            console.log(EndDate);
-        }
-    });
-
-
 
 
     React.useEffect(() => {
@@ -292,11 +287,30 @@ const ExpensePage: React.FunctionComponent<IExpensePageProps> = props => {
         setExpenses(recoverExpenses.filter((a: ExpenseType) => a.amount.toLowerCase().includes(text.toLowerCase())));
     }
 
-
     const DateFilter = () => {
-        setExpenses(recoverExpenses);
-        setExpenses(recoverExpenses.filter((a: ExpenseType) => a.transaction_date >= StartDate && a.transaction_date <= EndDate));
+        if (StartDate && EndDate) {
+
+            setExpenses(recoverExpenses);
+            let endDateFix = moment(EndDate).add(1, 'days').subtract(1, 'milliseconds').format('YYYY-MM-DD H:m:s');
+            setExpenses(recoverExpenses.filter((a: ExpenseType) => a.transaction_date >= StartDate && a.transaction_date <= endDateFix));
+
+            var TRYTotalRevenue = expenses.reduce((x: number, y: ExpenseType) => (y.currency.code == 'TRY' && y.category.is_income) ? x + parseFloat(y.amount) : x, 0);
+            var TRYTotalExpense = expenses.reduce((x: number, y: ExpenseType) => (y.currency.code == 'TRY' && !y.category.is_income) ? x + parseFloat(y.amount) : x, 0);
+            var TRYTotal = TRYTotalRevenue - TRYTotalExpense;
+
+            var USDTotalRevenue = expenses.reduce((x: number, y: ExpenseType) => (y.currency.code == 'USD' && y.category.is_income) ? x + parseFloat(y.amount) : x, 0);
+            var USDTotalExpense = expenses.reduce((x: number, y: ExpenseType) => (y.currency.code == 'USD' && !y.category.is_income) ? x + parseFloat(y.amount) : x, 0);
+            var USDTotal = USDTotalRevenue - USDTotalExpense;
+
+            var EURTotalRevenue = expenses.reduce((x: number, y: ExpenseType) => (y.currency.code == 'EUR' && y.category.is_income) ? x + parseFloat(y.amount) : x, 0);
+            var EURTotalExpense = expenses.reduce((x: number, y: ExpenseType) => (y.currency.code == 'EUR' && !y.category.is_income) ? x + parseFloat(y.amount) : x, 0);
+            var EURTotal = EURTotalRevenue - EURTotalExpense;
+
+            setTotalAmount(TRYTotal + USDTotal * USD_TCMB + EURTotal * EURO_TCMB);
+            setShowTotal(true);
+        }
     }
+
 
     const CurrencyFilter = (text: string) => {
         setExpenses(recoverExpenses);
@@ -410,6 +424,15 @@ const ExpensePage: React.FunctionComponent<IExpensePageProps> = props => {
                     </div>
                 </div>
             </form>
+
+            {showTotal ? (
+                <div className='text-center bg-light py-4'>
+                    <h4>{moment(StartDate).format('DD/MM/YYYY')} - {moment(EndDate).format('DD/MM/YYYY')} Tarihleri arasında Toplam : <span className='text-primary'>{totalAmount.toFixed(2)} TRY</span></h4>
+                    <div className='text-primary fw-bold'>USD: {USD_TCMB} - EUR: {EURO_TCMB}</div>
+                </div>
+            ) : (
+                null
+            )}
             <div className='mx-3'>
                 <div>
                     <table className='table table-hover mt-4 table-bordered'>
@@ -449,6 +472,7 @@ const ExpensePage: React.FunctionComponent<IExpensePageProps> = props => {
                                             setStartDate('');
                                             setEndDate('');
                                             setExpenses(recoverExpenses);
+                                            setShowTotal(false);
                                         }}>Temizle</button>
 
                                         <button type={'button'} className='btn btn-primary my-1' onClick={() => DateFilter()}>Ara</button>
