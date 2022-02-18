@@ -53,12 +53,18 @@ const RegisterPage: React.FunctionComponent<IRegisterPageProps> = props => {
     }
 
 
+    const submitForm = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        doRegister(email, password);
+    }
+
+
     return (
         <div className='body'>
             <HeaderComponent title='Kayıt Ol' />
             <div className='container w-50 text-center'>
 
-                <form>
+                <form onSubmit={submitForm}>
                     <div className="mb-3">
                         <label htmlFor="exampleInputEmail1" className="form-label">E-Posta</label>
                         <input type="email" value={email} className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" onChange={(event) => setEmail(event.target.value)} />
@@ -69,7 +75,7 @@ const RegisterPage: React.FunctionComponent<IRegisterPageProps> = props => {
                         <input type="password" value={password} className="form-control" id="exampleInputPassword1" onChange={(event) => setPassword(event.target.value)} />
                     </div>
 
-                    <button type="button" className="btn btn-primary btn-block" onClick={() => { doRegister(email, password); }}>Kayıt Ol</button>
+                    <button type="submit" className="btn btn-primary btn-block">Kayıt Ol</button>
                 </form>
                 <div className='text-center mt-5'>
                     Zaten kayıtlı mısınız?

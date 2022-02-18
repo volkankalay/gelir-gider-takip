@@ -19,7 +19,7 @@ const ExpensePage: React.FunctionComponent<IExpensePageProps> = props => {
 
     const [refresh, setRefresh] = React.useState(true);
 
-    const [date, setDate] = useState('');
+    const [date, setDate] = useState(moment(Date.now()).format('YYYY-MM-DD'));
     const [amount, setAmount] = useState('0.00');
     const [currency, setCurrency] = useState('1');
     const [category, setCategory] = useState('');
@@ -407,7 +407,6 @@ const ExpensePage: React.FunctionComponent<IExpensePageProps> = props => {
                         <input type="date" id='islemTarihi' className='form-control'
                             required
                             value={date}
-                            max={Date.now()}
                             onChange={(e) => setDate(e.target.value)} />
                     </div>
 

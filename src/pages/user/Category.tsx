@@ -18,6 +18,9 @@ const CategoryPage: React.FunctionComponent<ICategoryPageProps> = props => {
 
     const [refresh, setRefresh] = React.useState(true);
 
+    const [showUpdateBtn, setshowUpdateBtn] = useState(false);
+    const [UpdateId, setUpdateId] = useState(0);
+
     const addCategory = async (name: string, type: string) => {
         try {
 
@@ -32,7 +35,6 @@ const CategoryPage: React.FunctionComponent<ICategoryPageProps> = props => {
                             Authorization: `Bearer ` + AuthService.getCurrentToken()
                         }
                     });
-                setRefresh(true);
             } else {
                 alert('Boş alan bırakmayınız.');
             }
@@ -41,11 +43,54 @@ const CategoryPage: React.FunctionComponent<ICategoryPageProps> = props => {
             alert(error);
         }
     }
+
+    const updateCategory = async () => {
+
+        try {
+            if (name && UpdateId > 0) {
+                const { data } = await axios.put(AuthService.API_URL + "category/" + UpdateId, {
+                    name: name,
+                    is_income: type
+                },
+                    {
+                        headers: {
+                            Authorization: `Bearer ` + AuthService.getCurrentToken()
+                        }
+                    }).then(res => res.data);
+
+            } else {
+                alert('Hatalı Veri.');
+            }
+        } catch (error) {
+            console.log(error);
+            alert(error);
+        }
+    }
+
     const submitForm = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        addCategory(name, type);
+
+        if (UpdateId != 0) {
+            updateCategory();
+        } else {
+            addCategory(name, type);
+        }
         setRefresh(true);
         setName("");
+    }
+
+    const cancelUpdate = () => {
+        setshowUpdateBtn(false);
+        setUpdateId(0);
+        setName('');
+    }
+
+    const updateExpenseBtn = (id: number) => {
+        let updatingRecord = JSON.parse(JSON.stringify(categories.filter((a: CategoryType) => a.id == id)));
+        setshowUpdateBtn(true);
+        setUpdateId(updatingRecord[0].id);
+        setName(updatingRecord[0].name);
+        setType(updatingRecord[0].is_income);
     }
 
     const getCategories = async () => {
@@ -133,7 +178,14 @@ const CategoryPage: React.FunctionComponent<ICategoryPageProps> = props => {
 
                     <div className="mb-3 col-4">
                         <label htmlFor="btn-submit" className="form-label">Gelir/Gider</label><br />
-                        <button type='submit' id='btn-submit' className='btn btn-primary'>Yeni Ekle</button>
+                        {showUpdateBtn ? (
+                            <>
+                                <button type='submit' id='btn-submit-update' className='btn btn-secondary'>Güncelleştir</button>
+                                <button type='button' id='btn-submit-cancel' className='btn btn-danger' onClick={() => cancelUpdate()}>İptal Et</button>
+                            </>
+                        ) : (
+                            <button type='submit' id='btn-submit' className='btn btn-primary'>Yeni Ekle</button>
+                        )}
                     </div>
                 </div>
             </form>
@@ -158,7 +210,7 @@ const CategoryPage: React.FunctionComponent<ICategoryPageProps> = props => {
                                     <td className='bg-danger text-light font-weight-bolder'>Gider</td>
                                 )}
                                 <td className='text-center'>
-                                    <div className='btn btn-primary'>Düzenle</div>
+                                    <div className='btn btn-primary' onClick={() => updateExpenseBtn(id)}>Düzenle</div>
                                 </td>
                                 <td className='text-center'>
                                     <div className='btn btn-danger' onClick={() => deleteCategory(id)}>Sil</div>

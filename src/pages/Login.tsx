@@ -54,6 +54,11 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = props => {
             alert(error);
         }
     }
+    
+    const submitForm = (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        doLogin(email, password);
+    }
 
 
     return (
@@ -61,7 +66,7 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = props => {
             <HeaderComponent title='Giriş Yap'/>
             <div className='container w-50 text-center'>
 
-                <form>
+                <form onSubmit={submitForm}>
                     <div className="mb-3">
                         <label htmlFor="exampleInputEmail1" className="form-label">E-Posta</label>
                         <input type="email" value={email} className="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" onChange={(event) => setEmail(event.target.value)} />
@@ -72,7 +77,7 @@ const LoginPage: React.FunctionComponent<ILoginPageProps> = props => {
                         <input type="password" value={password} className="form-control" id="exampleInputPassword1" onChange={(event) => setPassword(event.target.value)} />
                     </div>
 
-                    <button type="button" className="btn btn-primary btn-block" onClick={() => { doLogin(email, password); }}>Giriş Yap</button>
+                    <button type="submit" className="btn btn-primary btn-block">Giriş Yap</button>
                 </form>
                 <div className='text-center mt-5'>
                     Hesabınız yok mu?
