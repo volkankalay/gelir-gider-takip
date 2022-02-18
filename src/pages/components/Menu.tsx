@@ -39,7 +39,6 @@ const MenuComponent: React.FunctionComponent<IMenuComponentProps> = props => {
                         <a className="nav-link" href="./kullanici">Kullanıcı Paneli</a>
                         <a className="nav-link" href="./kategoriler">Kategoriler</a>
                         <a className="nav-link" href="./gelir-gider">Gelir Gider</a>
-                        <a className="nav-link" href="./raporlama">Raporlama</a>
                     </div>
                     <div className='btn btn-danger float-right' onClick={() => doLogout()}>Çıkış Yap</div>
                 </div>

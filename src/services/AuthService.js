@@ -1,7 +1,7 @@
 import axios from "axios";
 import authHeader from "./AuthHeader";
 
-const API_URL = "http://192.168.1.100/api/v1/";
+export const API_URL = "http://192.168.1.100/api/v1/";
 
 export const register = async (email, password) => {
     return axios
@@ -17,6 +17,7 @@ export const register = async (email, password) => {
             return response.data;
         });
 };
+
 export const login = async (email, password) => {
     return axios
         .post(API_URL + "register", {
@@ -31,6 +32,7 @@ export const login = async (email, password) => {
             return response.data;
         });
 };
+
 export const logout = async () => {
 
     return await axios.post(API_URL + "logout", {
@@ -48,13 +50,19 @@ export const logout = async () => {
             console.error(error)
         });
 };
+
 export const getCurrentUser = () => {
     const userStr = sessionStorage.getItem("user");
     if (userStr) return JSON.parse(userStr);
     return null;
 };
+
 export const getCurrentToken = () => {
     const userToken = sessionStorage.getItem("userToken");
     if (userToken) return JSON.parse(userToken);
     return null;
+};
+
+export const getUserDetails = () => {
+    return axios.get(API_URL + "user", { headers: authHeader() });
 };
